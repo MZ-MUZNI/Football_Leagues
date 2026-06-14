@@ -35,7 +35,6 @@ import kotlinx.coroutines.launch
 lateinit var db: AppDatabase
 lateinit var leaguesDao: LeaguesDao
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +60,7 @@ fun Home() {
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.matchParentSize()
         )
-
     }
-
     Box(modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
         ){
@@ -75,8 +72,6 @@ fun Home() {
             color = Color.Cyan,
         )
     }
-
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -123,9 +118,7 @@ fun Home() {
                             lg ->  leaguesDao.insertLeagues(lg)
                         }
                     }
-
                 } catch (_: NumberFormatException){ }
-
             }, modifier = Modifier.width(238.dp),
                 colors = ButtonDefaults.buttonColors(Color.Blue)) {
                 Text("Add Leagues to DB")
