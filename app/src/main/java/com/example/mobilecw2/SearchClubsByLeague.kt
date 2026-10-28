@@ -15,7 +15,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -118,23 +117,23 @@ fun SearchByLeague() {
 
 
 
-suspend fun fetchClubs(keyword: String):String {
-    val url_string = "https://www.thesportsdb.com/api/v1/json/3/search_all_teams.php?l=${keyword}"
-    val url = URL(url_string)
-    val con: HttpURLConnection = url.openConnection() as HttpURLConnection
-    var stb = StringBuilder() // collecting all the JSON string
-
-    // run the code of the launched coroutine in a new thread
-    withContext(Dispatchers.IO) {
-        var bf = BufferedReader(InputStreamReader(con.inputStream))
+suspend fun fetchClubs(keyword: String): String = withContext(Dispatchers.IO) {
+    val stb = StringBuilder()
+    try {
+        val url_string = "https://www.thesportsdb.com/api/v1/json/3/search_all_teams.php?l=${keyword}"
+        val url = URL(url_string)
+        val con: HttpURLConnection = url.openConnection() as HttpURLConnection
+        val bf = BufferedReader(InputStreamReader(con.inputStream))
         var line: String? = bf.readLine()
-        while (line != null) { // keeps reading until no more lines of text
-            stb.append(line + "\n")
+        while (line != null) {
+            stb.append(line).append("\n")
             line = bf.readLine()
         }
+        con.disconnect()
+        parseJSON(stb)
+    } catch (e: Exception) {
+        "Error fetching clubs: ${e.localizedMessage}"
     }
-    val allClubs = parseJSON(stb)
-    return allClubs
 }
 
 

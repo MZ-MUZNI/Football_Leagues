@@ -82,11 +82,11 @@ fun SearchForClubs() {
             Button(onClick = {
                 try {
                     scope.launch{
-                        var clubSearch = clubsDao.searchClubsByName(keyword)
+                        val clubSearch = clubsDao.searchClubsByName(keyword)
                         if (clubSearch.isEmpty()) {
                             noSearchResults = true
                         } else {
-                             clubs = clubSearch
+                            clubs = clubSearch
                             noSearchResults = false
                         }
                     }
@@ -117,40 +117,38 @@ fun SearchForClubs() {
 }
 
 @Composable
-fun ClubListItem(club:Clubs){
+fun ClubListItem(club: Clubs) {
     var imageBitmap by rememberSaveable {
         mutableStateOf<ImageBitmap?>(null)
     }
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = club.strTeamLogo) {
-        val bitmap= withContext(Dispatchers.IO){
-            fetchImageBitMap(club.strTeamLogo)
-        }
-        imageBitmap= bitmap
+        imageBitmap = fetchImageBitMap(club.strTeamLogo)
     }
-    imageBitmap.let {
-        if (it != null) {
-            Image(
-                bitmap = it,
-                contentDescription = "Club Logo",
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(100.dp)
-            )
-        }
-        Text(text = club.strTeam)
+    imageBitmap?.let { bitmap ->
+        Image(
+            bitmap = bitmap,
+            contentDescription = "Club Logo",
+            modifier = Modifier
+                .width(100.dp)
+                .height(100.dp)
+        )
     }
+    Text(text = club.strTeam)
 }
 
-suspend fun fetchImageBitMap(url: String):ImageBitmap{
-    val connection= URL(url).openConnection() as HttpURLConnection
-    connection.doInput= true
-    connection.connect()
-
-    val inputStream= connection.inputStream
-    val bitmap= BitmapFactory.decodeStream(inputStream)
-    return bitmap.asImageBitmap()
+suspend fun fetchImageBitMap(url: String): ImageBitmap? = withContext(Dispatchers.IO) {
+    try {
+        val connection = URL(url).openConnection() as HttpURLConnection
+        connection.doInput = true
+        connection.connect()
+        val inputStream = connection.inputStream
+        val bitmap = BitmapFactory.decodeStream(inputStream)
+        connection.disconnect()
+        bitmap?.asImageBitmap()
+    } catch (e: Exception) {
+        null
+    }
 }
 
 @Preview(showBackground = true)

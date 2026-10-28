@@ -25,11 +25,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.room.Room
+import com.example.mobilecw2.R.drawable.footballbgmob
 import kotlinx.coroutines.launch
 
 lateinit var db: AppDatabase
@@ -55,7 +55,7 @@ fun Home() {
     val scope= rememberCoroutineScope()
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(id = R.drawable.footballbgmob),
+            painter = painterResource(id = footballbgmob),
             contentDescription = "BgImg",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.matchParentSize()
